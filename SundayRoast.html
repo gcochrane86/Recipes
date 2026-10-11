@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Sunday Roast Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+</head>
+<body>
+<style>
+/* Layout: kitchen pass — sticky left rail (clock, next up, appliance board) + tappable timeline; timers dock at the bottom */
+:root{
+  --bg:#e9ece6; --surface:#fbfcf9; --sunk:#f1f3ee; --ink:#18201c; --muted:#5b6761; --line:#d3d9d1;
+  --accent:#1d5a42; --accent-ink:#ffffff; --gold:#b97c0c; --hot:#c33f1a; --done:#7f8b85;
+  --c1:#d9622b; --c2:#b5447a; --c3:#7b5cc9; --apo:#2a88b3; --tm:#2f9a5f; --hob:#bf9512; --ctr:#7d8580;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Figtree", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1512; --surface:#18201c; --sunk:#131a17; --ink:#e7ede9; --muted:#97a59e; --line:#2a3631;
+  --accent:#62c095; --accent-ink:#0d1a14; --gold:#e8ad3c; --hot:#ff7d55; --done:#6b7872;
+  --c1:#f07c45; --c2:#d9649a; --c3:#a088ea; --apo:#4fb0dc; --tm:#52c283; --hob:#e1b733; --ctr:#9aa39e;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f1512; --surface:#18201c; --sunk:#131a17; --ink:#e7ede9; --muted:#97a59e; --line:#2a3631;
+  --accent:#62c095; --accent-ink:#0d1a14; --gold:#e8ad3c; --hot:#ff7d55; --done:#6b7872;
+  --c1:#f07c45; --c2:#d9649a; --c3:#a088ea; --apo:#4fb0dc; --tm:#52c283; --hob:#e1b733; --ctr:#9aa39e;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45;padding-inline:16px;padding-block:16px 120px;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-block:8px 18px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1;margin:6px 0 0;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.pill-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-weight:600;font-size:15px;min-height:44px}
+.pill-btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rehearse{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:16px}
+.rehearse input{flex:1;min-width:0;accent-color:var(--gold);height:32px}
+.rehearse b{font-family:var(--f-mono);min-width:86px}
+
+.grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:22px;align-items:start}
+aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 24px);overflow:auto;padding-bottom:8px}
+@media (max-width:920px){.grid{grid-template-columns:1fr} aside{position:static;max-height:none;overflow:visible}}
+
+.clock{background:var(--accent);color:var(--accent-ink);border-radius:var(--r);padding:18px 20px}
+.clock .t{font-family:var(--f-mono);font-weight:600;font-size:46px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.clock .t small{font-size:18px;margin-left:6px;opacity:.8}
+.clock .sub{margin-top:8px;font-size:15px;opacity:.9}
+.clock .bar{height:6px;border-radius:6px;background:color-mix(in srgb,var(--accent-ink) 22%,transparent);margin-top:14px;overflow:hidden}
+.clock .bar i{display:block;height:100%;background:var(--accent-ink);width:0}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.panel h2{font-family:var(--f-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:700}
+.next .when{font-family:var(--f-mono);font-size:15px;color:var(--gold);font-weight:600}
+.next .what{font-family:var(--f-display);font-weight:700;font-size:21px;line-height:1.15;margin-top:4px}
+.next button{margin-top:12px}
+
+.board{display:flex;flex-direction:column;gap:8px}
+.app{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.app:first-child{border-top:0}
+.app .dot{width:10px;height:10px;border-radius:50%;background:var(--eq)}
+.app .nm{font-weight:600;font-size:15px}
+.app .ds{font-size:13px;color:var(--muted)}
+.app .st{font-family:var(--f-mono);font-size:14px;font-weight:600;text-align:right;color:var(--eq)}
+.app.idle .st{color:var(--muted);font-weight:500}
+.app.idle .dot{opacity:.35}
+
+.phases{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-top:8px}
+.phases .pill-btn{white-space:nowrap}
+
+section.phase{margin-bottom:28px;scroll-margin-top:70px}
+.phase-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 2px 12px}
+.phase-head h3{font-family:var(--f-display);font-weight:800;font-size:26px;margin:0;letter-spacing:-.01em}
+.phase-head span{font-family:var(--f-mono);color:var(--muted);font-size:14px}
+
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;scroll-margin-top:70px}
+.step.now{border-color:var(--hot);box-shadow:0 0 0 3px color-mix(in srgb,var(--hot) 22%,transparent)}
+.step.complete .shead{opacity:.6}
+.shead{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.stime{font-family:var(--f-mono);font-weight:600;font-size:22px;font-variant-numeric:tabular-nums;line-height:1}
+.stime small{font-size:12px;color:var(--muted);margin-left:3px}
+.stitle{font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1.15;min-width:0}
+.stitle .eqs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-family:var(--f-body);font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--eq) 16%,var(--surface));color:var(--ink);border:1px solid color-mix(in srgb,var(--eq) 40%,transparent);white-space:nowrap}
+.sstat{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.badge{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:6px;background:var(--line);color:var(--muted)}
+.badge.now{background:var(--hot);color:#fff}
+.badge.next{background:var(--gold);color:#1a1404}
+.badge.done{background:var(--accent);color:var(--accent-ink)}
+.count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+
+.tasks{display:flex;flex-direction:column}
+.task{display:flex;align-items:stretch;border-top:1px solid var(--line)}
+.task:first-child{border-top:0}
+.tmain{flex:1;min-width:0;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start;text-align:left;background:none;border:0;padding:14px 16px;min-height:60px}
+.box{width:30px;height:30px;border-radius:9px;border:2px solid color-mix(in srgb,var(--eq) 70%,var(--line));display:grid;place-items:center;transition:background .15s}
+.box svg{width:18px;height:18px;opacity:0}
+.task.done .box{background:var(--eq);border-color:var(--eq)}
+.task.done .box svg{opacity:1}
+.ttext{padding-top:3px}
+.ttext .who{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--eq);display:block;margin-bottom:2px}
+.task.done .ttext{color:var(--done);text-decoration:line-through;text-decoration-thickness:1.5px}
+.ttext ul{margin:6px 0 0;padding-left:18px}
+.tbtn{flex:none;margin:10px 12px 10px 0;align-self:center;border:2px solid var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--surface));color:var(--ink);border-radius:12px;padding:8px 14px;font-weight:700;font-family:var(--f-mono);font-size:15px;min-height:48px;display:flex;align-items:center;gap:6px}
+.tbtn.running{background:var(--gold);color:#1a1404}
+.temp{font-family:var(--f-mono);font-weight:600;white-space:nowrap}
+
+.downtime{padding:22px;text-align:left;background:repeating-linear-gradient(135deg,var(--surface) 0 14px,var(--sunk) 14px 28px)}
+.downtime p{margin:6px 0}
+.downtime .big{font-family:var(--f-display);font-weight:800;font-size:24px}
+
+.shead{cursor:pointer;user-select:none}
+.shead:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.chev{width:22px;height:22px;color:var(--muted);transition:transform .2s}
+.step.collapsed .chev{transform:rotate(-90deg)}
+.step.collapsed .tasks,.step.collapsed .downtime{display:none}
+.step.collapsed .shead{border-bottom:0}
+.sstat .row{display:flex;align-items:center;gap:8px}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+button.tag{cursor:pointer;font:600 12px var(--f-body);display:inline-flex;align-items:center;gap:4px;padding:4px 10px}
+button.tag::after{content:"ⓘ";font-size:11px;opacity:.6}
+button.tag:active,.who:active{opacity:.6}
+.who{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+button.app{width:100%;background:none;border:0;border-top:1px solid var(--line);text-align:left;cursor:pointer;border-radius:0}
+button.app:first-child{border-top:0}
+.sheet-bg{position:fixed;inset:0;z-index:40;background:rgba(10,14,12,.45);display:grid;place-items:center;padding:16px}
+.sheet{background:var(--surface);color:var(--ink);border-radius:20px;width:100%;max-width:540px;max-height:86vh;overflow:auto;padding:22px;border-top:6px solid var(--eq)}
+.sheet-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sheet h4{font-family:var(--f-display);font-weight:800;font-size:26px;margin:0;line-height:1.1}
+.sheet .sub{color:var(--muted);margin-top:4px}
+.sheet .x{border:0;background:var(--sunk);border-radius:12px;min-width:48px;min-height:48px;font-size:20px;font-weight:700}
+.sheet .note{margin:14px 0 0}
+.sheet h5{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px}
+.sheet svg.layout{width:100%;max-width:340px;display:block;margin:16px auto 0}
+.sched{display:flex;flex-direction:column;gap:2px}
+.sched div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.sched div:first-child{border-top:0}
+.sched b{font-family:var(--f-mono);font-weight:600;font-size:14px}
+.sched .cur{color:var(--eq);font-weight:700}
+.jl{display:flex;flex-direction:column;gap:6px}
+.jl button{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--sunk);border-radius:12px;padding:10px 12px;min-height:48px}
+.jl b{font-family:var(--f-mono);font-weight:600;font-size:14px}
+.service .shead{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+
+.dock{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:20}
+.dock-in{max-width:1240px;margin:0 auto;display:flex;gap:10px;overflow-x:auto}
+.timer{flex:none;display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--gold);border-radius:14px;padding:8px 8px 8px 14px;min-width:220px}
+.timer .lb{font-size:13px;font-weight:600;color:var(--muted);line-height:1.1}
+.timer .rm{font-family:var(--f-mono);font-weight:600;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.timer button{margin-left:auto;border:0;background:var(--sunk);border-radius:10px;min-width:48px;min-height:48px;font-weight:700}
+.timer.ring{border-color:var(--hot);background:var(--hot);color:#fff;animation:pulse 1s infinite}
+.timer.ring .lb{color:#fff}
+.timer.ring button{background:#fff;color:var(--hot);padding:0 14px}
+@keyframes pulse{50%{transform:scale(1.03)}}
+@media (prefers-reduced-motion:reduce){.timer.ring{animation:none}}
+
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.foot{color:var(--muted);font-size:14px;margin-top:8px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">15 covers · Brisket · Service 1:30 PM</div>
+      <h1>Sunday Roast <em>Service</em></h1>
+    </div>
+    <div class="tools">
+      <button class="pill-btn" id="wakeBtn" aria-pressed="false">Keep screen on</button>
+      <button class="pill-btn" id="foldBtn">Expand all</button>
+      <button class="pill-btn" id="rehBtn" aria-pressed="false">Rehearse time</button>
+      <span class="confirm" id="resetWrap"><button class="pill-btn" id="resetBtn">Reset ticks</button></span>
+    </div>
+  </header>
+
+  <div class="rehearse" id="rehBar" hidden>
+    <span class="eyebrow">Scrub</span>
+    <input type="range" id="rehRange" min="515" max="815" step="1" value="525" aria-label="Rehearsal time">
+    <b id="rehOut">8:45 AM</b>
+  </div>
+
+  <div class="grid">
+    <aside>
+      <div class="clock">
+        <div class="t" id="clk">--:--</div>
+        <div class="sub" id="clkSub"></div>
+        <div class="bar"><i id="clkBar"></i></div>
+      </div>
+      <div class="panel next">
+        <h2>Next up</h2>
+        <div class="when" id="nxWhen"></div>
+        <div class="what" id="nxWhat"></div>
+        <button class="pill-btn" id="jumpNow">Jump to current step</button>
+      </div>
+      <div class="panel">
+        <h2>Appliances right now</h2>
+        <div class="board" id="board"></div>
+      </div>
+    </aside>
+
+    <main>
+      <nav class="phases" id="phaseNav"></nav>
+      <div id="timeline"></div>
+      <p class="foot">Ticks and running timers are saved on this iPad. Tap a timer button to start it; it rings until you tap Done.</p>
+    </main>
+  </div>
+</div>
+
+<div class="dock" id="dock" hidden><div class="dock-in" id="dockIn"></div></div>
+
+<script>
+const EQ = {
+  c1:{n:"Cavity 1",d:"Top right · 61L fan"},
+  c2:{n:"Cavity 2",d:"Bottom left · 61L multi"},
+  c3:{n:"Cavity 3",d:"Top left · 36L grill"},
+  apo:{n:"Anova APO",d:"Steam oven"},
+  tm:{n:"Thermomix TM7",d:"Cookidoo"},
+  hob:{n:"Induction hob",d:""},
+  ctr:{n:"Counter",d:""}
+};
+const T = (h,m)=>h*60+m;
+const t = (s)=>s.replace(/(\d+°C(?: \/ \d+% Steam| Fan| Conventional\/Circulaire)?)/g,'<span class="temp">$1</span>');
+
+const PHASES = [
+ {id:"p0",name:"Last night",short:"Overnight",range:"Saturday, before bed"},
+ {id:"p1",name:"Morning power hour",short:"Morning",range:"8:45 – 10:00 AM"},
+ {id:"p2",name:"Walk & downtime",short:"Downtime",range:"10:00 AM – 12:00 PM"},
+ {id:"p3",name:"Service countdown",short:"Countdown",range:"11:55 AM – 1:30 PM"}
+];
+
+const STEPS = [
+ {p:"p0",at:-120,title:"Overnight beef braise",tasks:[
+  ["ctr","Keep the butcher netting on all 3 brisket joints (about 10–11 lb / 4.5–5 kg total) so they hold their shape for neat slicing."],
+  ["hob","Season with coarse salt and black pepper, then sear hard in a hot skillet for colour."],
+  ["ctr","Place the briskets side by side in a deep roasting tray."],
+  ["ctr","Add 500ml beef stock, 1 sliced onion, 4 smashed garlic cloves and a dash of Worcestershire sauce around the base."],
+  ["ctr","Cover tightly with a double layer of foil to trap the braising moisture."],
+  ["apo","Set APO to 80°C / 100% Steam (176°F), convection mode."],
+  ["apo","Slide the tray in at about 10:30 PM and run for 10 hours. A probe should slide in easily, but a slice should still hold together."]]},
+ {p:"p1",at:T(8,45),title:"Potatoes into the steam",tasks:[
+  ["ctr","Cut roasting potatoes into irregular 45–50mm chunks."],
+  ["apo","Load onto Rack 1 (lowest shelf, elevated off the base), beside the brisket tray."],
+  ["apo","Raise APO to 85°C / 100% Steam. Steam the potatoes for 60 minutes total.",60,"APO potatoes"]]},
+ {p:"p1",at:T(8,50),title:"Brisket harvest & separation",tasks:[
+  ["apo","Remove the overnight brisket from the APO."],
+  ["ctr","Pour most of the juices into a jug, but <b>leave about 2cm in the tray</b> around the meat. Re-cover the tray tightly with foil; the brisket holds in its own liquid so it stays moist."],
+  ["ctr","Skim the jug and separate the golden tallow (for roasting) from the beef jus (for gravy)."],
+  ["ctr","Cover jus and tallow and put both in the fridge. Any fat left on the jus sets on top and lifts off easily."]]},
+ {p:"p1",at:T(8,55),title:"Yorkshire pudding batter",tasks:[
+  ["tm","Run the saved Cookidoo “Yorkshire Pudding” recipe."],
+  ["ctr","Pour batter into a jug, cover, and rest in the fridge."],
+  ["tm","Rinse the TM7 bowl."]]},
+ {p:"p1",at:T(9,5),title:"Prep the roots (raw)",tasks:[
+  ["ctr","Scrub or peel carrots and parsnips. Cut into even batons about 2cm thick; halve thick parsnip tops so every piece matches."],
+  ["ctr","Keep them raw. No steaming: roots soften too slowly below boiling and can set firm. Cover and refrigerate."]]},
+ {p:"p1",at:T(9,10),title:"Cauliflower parboil",tasks:[
+  ["hob","Drop florets into boiling salted water for 3–4 minutes.",4,"Cauli parboil"],
+  ["ctr","Drain thoroughly and spread in a single layer over clean tea towels to steam bone-dry."]]},
+ {p:"p1",at:T(9,20),title:"Cheese sauce & assemble",tasks:[
+  ["tm","Run the saved Cookidoo “Cheese Sauce” recipe."],
+  ["ctr","Fold sauce over the dry florets in a large baking dish; scatter extra cheese on top."],
+  ["ctr","Leave uncovered 15–20 min to cool, then cover and refrigerate."]]},
+ {p:"p1",at:T(9,35),title:"Prep mash potatoes",tasks:[
+  ["ctr","Peel and cut mash potatoes into 2cm cubes."],
+  ["hob","Submerge in a large pot of cold salted water on the hob, ready for later."]]},
+ {p:"p1",at:T(9,45),title:"APO switch to holding safe",tasks:[
+  ["apo","Pull potatoes: tip into a colander, rough up vigorously, spread on wire racks to air-dry."],
+  ["apo","Wipe any pooled water from the APO floor."],
+  ["apo","Switch APO to 65°C / 30% Steam (Sous Vide mode)."],
+  ["apo","Place the covered brisket tray, juices and all, inside to hold until service."]]},
+ {p:"p1",at:T(9,50),title:"Gravy base",tasks:[
+  ["ctr","Lift any set fat off the chilled jus."],
+  ["hob","Brown 1 sliced onion and 1 chopped carrot hard in a little tallow until dark and sticky (about 10 min).",10,"Brown onion"],
+  ["hob","Add a good glass of red wine and reduce by half before anything else goes in.",4,"Reduce wine"],
+  ["hob","Stir in 40g flour for 2 min, then gradually whisk in the brisket jus and beef stock to make about 1 litre.",2,"Roux"],
+  ["hob","Add a splash of Worcestershire and the thyme. Simmer 15 min, then strain, pressing the veg.",15,"Gravy simmer"],
+  ["ctr","Cool uncovered, then cover and refrigerate. Finish it at 1:10."]]},
+ {p:"p2",at:T(10,15),title:"Into the fridge, then go",downtime:true,tasks:[
+  ["ctr","Once the steam has stopped rising, slide the potato racks into the fridge <b>uncovered</b>. The cold air keeps drying them for crisper roasties."]]},
+ {p:"p3",at:T(11,55),title:"Fridge out · first oven on",tasks:[
+  ["c1","Put the fat in the Yorkshire tins and preheat to 220°C Fan. Use a layer about 4mm deep in each hole: roughly 1 tbsp (15ml) per hole in a 4-hole tin, or 2 tsp per hole in a 12-hole tin. Beef tallow first, topped up with spare goose fat or sunflower oil."],
+  ["ctr","Take potatoes, roots, cauliflower cheese and gravy base out of the fridge. Give the batter a quick stir."]]},
+ {p:"p3",at:T(12,0),title:"Boil and warm plates",tasks:[
+  ["hob","Bring the pot of diced mash potatoes to a rolling boil (15–18 min).",17,"Mash boil"],
+  ["c3","Stack 15 dinner plates inside on low warm."],
+  ["ctr","Toss carrots and parsnips with olive oil, salt and pepper. Spread in a <b>single layer</b> across two trays, with gaps between pieces so they roast instead of steam."]]},
+ {p:"p3",at:T(12,15),title:"Yorkshires in",tasks:[
+  ["c1","Check the fat is smoking. If not, give it 5 more minutes."],
+  ["c1","Work fast with the door shut between tins: fill each hole only <b>a third to half full</b>. The batter should sizzle hard and the fat should well up around its edges."],
+  ["c1","Bake 20–22 min at 220°C Fan. Don't open the door.",21,"Yorkshires"]]},
+ {p:"p3",at:T(12,20),title:"Whip the mash · second oven on",tasks:[
+  ["c2","Preheat to 200°C Conventional/Circulaire."],
+  ["tm","Drain boiled potatoes thoroughly. Add to TM7 with butter, warm milk, salt and nutmeg; whip until silky (Speed 3–4, butterfly whisk)."],
+  ["apo","Transfer mash to a covered dish and slide into the APO beside the brisket."]]},
+ {p:"p3",at:T(12,36),title:"Yorkshires out · goose fat in",tasks:[
+  ["c1","Pull Yorkshires to rest on the counter. Drop oven to 210°C Fan."],
+  ["c1","Slide in 2 large roasting pans with 200g goose fat (100g each) to get smoking hot."],
+  ["c2","Slide in the carrot and parsnip trays (raw). Roast 40 min, then glaze.",40,"Roots"]]},
+ {p:"p3",at:T(12,42),title:"Roasties in",tasks:[
+  ["c1","Carefully tumble the dry potatoes into the smoking goose fat. Roast 44 min.",44,"Roasties"]]},
+ {p:"p3",at:T(12,48),title:"Cauliflower cheese in",tasks:[
+  ["c2","Slide in the cauliflower cheese beside the roots. Bake 35–40 min at 200°C. It came from the fridge, so check the centre is piping hot (75°C) before serving.",38,"Cauli cheese"]]},
+ {p:"p3",at:T(13,10),title:"Finish the gravy",tasks:[
+  ["hob","Bring the gravy base to a gentle simmer. If it's thin, let it reduce for a few minutes."],
+  ["c1","Turn the roast potatoes in the goose fat."]]},
+ {p:"p3",at:T(13,16),title:"Glaze the roots · season gravy",tasks:[
+  ["c2","Pull root trays out briefly. Test a thick piece with a knife; it should already be nearly tender.<ul><li><b>Carrots:</b> honey, orange juice, orange zest, bruised thyme.</li><li><b>Parsnips:</b> red wine vinegar, bruised bay leaves.</li></ul>"],
+  ["c2","Return both trays for the final 10 min glaze.",10,"Root glaze"],
+  ["hob","Season the gravy: 1–2 tsp redcurrant jelly, a dash of soy sauce or Worcestershire, then salt until it tastes rich rather than flat. Keep on lowest heat."]]},
+ {p:"p3",at:T(13,26),title:"Pull everything",tasks:[
+  ["c1","Pull roast potatoes. From Cavity 2: glazed roots and bubbling cauliflower cheese."],
+  ["c3","Switch to High Grill; slide in rested Yorkshires for 90 seconds to flash crisp.",1.5,"Yorkshire flash"],
+  ["apo","Pull the brisket tray and the hot mash. Lift the brisket onto the board, snip off the netting, and keep the tray juices.",4,"Brisket rest"],
+  ["c3","Retrieve the warm plates."],
+  ["hob","Off the heat, whisk a knob of cold butter into the gravy for gloss, then pour into warm sauceboats."]]},
+ {p:"p3",at:T(13,30),title:"Service",service:true,tasks:[
+  ["ctr","Carve the brisket across the grain, about 1cm thick. Lay the slices in a warm dish and spoon the hot tray juices over them so they stay moist at the table."],
+  ["ctr","Serve roasties, honey-citrus carrots, tangy bay parsnips, cauliflower cheese and mash family-style."],
+  ["ctr","Top with piping-hot Yorkshires and hot gravy."]]}
+];
+
+// Appliance state timeline: [from, label]
+const APP = {
+ c1:[[0,"Off"],[T(11,55),"220°C Fan · preheat"],[T(12,15),"220°C Fan · Yorkshires"],[T(12,36),"210°C Fan · goose fat"],[T(12,42),"210°C Fan · roasties"],[T(13,26),"Off · emptied"]],
+ c2:[[0,"Off"],[T(12,20),"200°C · preheat"],[T(12,36),"200°C · roots"],[T(12,48),"200°C · roots & cauli"],[T(13,16),"200°C · glazing"],[T(13,26),"Off · emptied"]],
+ c3:[[0,"Off"],[T(12,0),"Low warm · plates"],[T(13,26),"High grill · flash"],[T(13,30),"Off"]],
+ apo:[[-9999,"Off"],[-120,"80°C · steam · brisket braise"],[T(8,45),"85°C · 100% steam · potatoes"],[T(9,45),"65°C · 30% hold"],[T(13,26),"Empty"]],
+ tm:[[0,"Idle"],[T(8,55),"Yorkshire batter"],[T(9,5),"Idle"],[T(9,20),"Cheese sauce"],[T(9,30),"Idle"],[T(12,20),"Whipping mash"],[T(12,30),"Idle"]],
+ hob:[[0,"Off"],[-120,"Off"],[T(9,10),"Cauli parboil"],[T(9,15),"Off"],[T(9,50),"Gravy base"],[T(10,15),"Off"],[T(12,0),"Mash boiling"],[T(12,20),"Off"],[T(13,10),"Gravy · simmer"],[T(13,16),"Gravy · lowest"],[T(13,30),"Off"]]
+};
+const IDLE = /^(Off|Idle|Empty)/;
+
+// ---------- storage ----------
+const KEY="roast-plan-v3";
+let S={done:{},timers:[],open:{}};
+try{const r=JSON.parse(localStorage.getItem(KEY)); if(r) S=Object.assign(S,r);}catch(e){}
+if(!S.open)S.open={};
+// Steps already done before the page was opened start ticked; unticking is remembered as false.
+function seedPredone(){STEPS.forEach((s,i)=>{if(s.predone)s.tasks.forEach((_,j)=>{const id=`${i}-${j}`;if(!(id in S.done))S.done[id]=true})})}
+seedPredone();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({done:S.done,timers:S.timers,open:S.open}))}catch(e){}};
+let preview=null;
+
+// ---------- helpers ----------
+const fmt=(m,split)=>{if(m<0)return split?["Sat","night"]:"Last night";m=Math.round(m);let h=Math.floor(m/60)%24,mm=m%60,ap=h>=12?"PM":"AM",h12=h%12||12;const s=h12+":"+String(mm).padStart(2,"0");return split?[s,ap]:s+" "+ap};
+const nowMin=()=>{if(preview!=null)return preview;const d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60};
+const dur=(m)=>{m=Math.max(0,Math.round(m));const h=Math.floor(m/60),r=m%60;return h?`${h}h ${r}m`:`${r} min`};
+const check='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+// ---------- render ----------
+const tl=document.getElementById("timeline");
+document.getElementById("phaseNav").innerHTML=PHASES.map(p=>`<button class="pill-btn" data-go="${p.id}">${p.short} · ${p.range.split(" – ")[0]}</button>`).join("");
+tl.innerHTML=PHASES.map(p=>{
+  const steps=STEPS.map((s,i)=>({...s,i})).filter(s=>s.p===p.id);
+  return `<section class="phase" id="${p.id}"><div class="phase-head"><h3>${p.name}</h3><span>${p.range}</span></div><div class="steps">`+
+  steps.map(s=>{
+    const [tm,ap]=fmt(s.at,true);
+    const eqs=[...new Set(s.tasks.map(x=>x[0]))];
+    return `<article class="step${s.service?' service':''}" id="s${s.i}" data-i="${s.i}">
+      <div class="shead" data-toggle="${s.i}" role="button" tabindex="0" aria-expanded="true"><div class="stime">${tm}<small>${ap}</small></div>
+      <div class="stitle">${s.title}<div class="eqs">${eqs.map(e=>`<button class="tag" data-eq="${e}" style="--eq:var(--${e})" aria-label="${EQ[e].n} details">${EQ[e].n}</button>`).join("")}</div></div>
+      <div class="sstat"><div class="row"><span class="badge" data-b></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div><span class="count" data-c></span></div></div>
+      <div class="tasks">${s.tasks.map((x,j)=>{const id=`${s.i}-${j}`;return `<div class="task" data-id="${id}" style="--eq:var(--${x[0]})">
+        <button class="tmain" data-tick="${id}" aria-pressed="false"><span class="box">${check}</span><span class="ttext"><span class="who" data-eq="${x[0]}">${EQ[x[0]].n}</span>${t(x[1])}</span></button>
+        ${x[2]?`<button class="tbtn" data-timer="${id}" data-min="${x[2]}" data-lb="${x[3]}">⏱ ${x[2]<2?Math.round(x[2]*60)+"s":x[2]+"m"}</button>`:""}</div>`}).join("")}</div>${s.downtime?`<div class="downtime"><div class="big">Go for a walk. Back at 11:55.</div><p>Brisket holds safely at <span class="temp">65°C</span> in the APO.</p><p>Everything else waits in the fridge: roasties drying on their racks, raw roots, cauliflower cheese, batter, gravy base and tallow.</p></div>`:""}</article>`;
+  }).join("")+`</div></section>`;
+}).join("");
+
+function paintTicks(){
+  document.querySelectorAll(".task").forEach(el=>{const on=!!S.done[el.dataset.id];el.classList.toggle("done",on);el.querySelector(".tmain").setAttribute("aria-pressed",on)});
+  STEPS.forEach((s,i)=>{if(!s.tasks)return;const n=s.tasks.filter((_,j)=>S.done[`${i}-${j}`]).length;const el=document.getElementById("s"+i);el.querySelector("[data-c]").textContent=`${n}/${s.tasks.length}`;el.classList.toggle("complete",n===s.tasks.length)});
+}
+
+// Collapsing: by default only the current step (until finished) and the next step are open.
+// Tapping a step header overrides that for the step; "Back to auto" clears overrides.
+function isComplete(i){const s=STEPS[i];return !!s.tasks&&s.tasks.every((_,j)=>S.done[`${i}-${j}`])}
+function applyOpen(){
+  const m=nowMin(),ci=curIndex(m),ni=STEPS.findIndex(s=>s.at>m);
+  STEPS.forEach((s,i)=>{
+    const auto=(i===ci&&!isComplete(i))||i===ni;
+    const open=i in S.open?S.open[i]:auto;
+    const el=document.getElementById("s"+i);
+    el.classList.toggle("collapsed",!open);
+    el.querySelector("[data-toggle]").setAttribute("aria-expanded",open);
+  });
+}
+function curIndex(m){let c=-1;STEPS.forEach((s,i)=>{if(s.at<=m)c=i});return c}
+
+function tick(){
+  const m=nowMin();
+  const [hm,ap]=fmt(m,true);
+  document.getElementById("clk").innerHTML=`${hm}<small>${ap}</small>`;
+  const start=T(8,45),svc=T(13,30);
+  const sub=m<start?`Kick-off in ${dur(start-m)}`:m<svc?`Service in ${dur(svc-m)}`:`Service is on. Enjoy.`;
+  document.getElementById("clkSub").textContent=(preview!=null?"Rehearsal · ":"")+sub;
+  document.getElementById("clkBar").style.width=Math.min(100,Math.max(0,(m-start)/(svc-start)*100))+"%";
+
+  const ci=curIndex(m);
+  let ni=STEPS.findIndex(s=>s.at>m);
+  STEPS.forEach((s,i)=>{
+    const el=document.getElementById("s"+i),b=el.querySelector("[data-b]");
+    const complete=el.classList.contains("complete");
+    let cls="",txt="";
+    if(i===ci){cls="now";txt="Now"} else if(i===ni){cls="next";txt="In "+dur(s.at-m)} else if(complete){cls="done";txt="Done"} else if(s.at<m){txt="Earlier"} else {txt=fmt(s.at)}
+    el.classList.toggle("now",i===ci);
+    b.className="badge "+cls;b.textContent=txt;
+  });
+  applyOpen();
+  const nx=STEPS[ni];
+  document.getElementById("nxWhen").textContent=nx?`${fmt(nx.at)} · in ${dur(nx.at-m)}`:"Nothing left";
+  document.getElementById("nxWhat").textContent=nx?nx.title:"Plates up. Carve and serve.";
+
+  document.getElementById("board").innerHTML=Object.keys(APP).map(k=>{
+    let st=APP[k][0][1];APP[k].forEach(([f,l])=>{if(f<=m)st=l});
+    return `<button class="app${IDLE.test(st)?" idle":""}" data-eq="${k}" style="--eq:var(--${k})"><span class="dot"></span><div><div class="nm">${EQ[k].n}</div>${EQ[k].d?`<div class="ds">${EQ[k].d}</div>`:""}</div><div class="st">${st}</div></button>`;
+  }).join("");
+}
+
+// ---------- timers ----------
+let actx=null,lastBeep=0;
+function unlock(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}} if(actx&&actx.state==="suspended")actx.resume()}
+function beep(){if(!actx)return;const t0=actx.currentTime;[0,.25,.5].forEach(o=>{const g=actx.createGain(),osc=actx.createOscillator();osc.type="square";osc.frequency.value=880;g.gain.setValueAtTime(.0001,t0+o);g.gain.exponentialRampToValueAtTime(.25,t0+o+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+o+.18);osc.connect(g).connect(actx.destination);osc.start(t0+o);osc.stop(t0+o+.2)})}
+function startTimer(id,min,lb){S.timers=S.timers.filter(x=>x.id!==id);S.timers.push({id,lb,end:Date.now()+min*60000});save();paintTimers()}
+function paintTimers(){
+  const dock=document.getElementById("dock"),inn=document.getElementById("dockIn");
+  dock.hidden=!S.timers.length;
+  const now=Date.now();let ringing=false;
+  inn.innerHTML=S.timers.sort((a,b)=>a.end-b.end).map(x=>{
+    const r=Math.max(0,Math.ceil((x.end-now)/1000)),done=r===0;if(done)ringing=true;
+    const mm=Math.floor(r/60),ss=String(r%60).padStart(2,"0");
+    return `<div class="timer${done?" ring":""}"><div><div class="lb">${x.lb}</div><div class="rm">${done?"Time!":mm+":"+ss}</div></div><button data-stop="${x.id}" aria-label="${done?"Dismiss":"Cancel"} ${x.lb}">${done?"Done":"✕"}</button></div>`;
+  }).join("");
+  document.querySelectorAll(".tbtn").forEach(b=>b.classList.toggle("running",S.timers.some(x=>x.id===b.dataset.timer)));
+  if(ringing&&now-lastBeep>2000){lastBeep=now;beep()}
+}
+
+// ---------- events ----------
+document.addEventListener("pointerdown",unlock,{passive:true});
+// ---------- appliance details ----------
+const INFO={
+ c1:{t:"Smeg Cavity 1",s:"Top right · 61L fan oven",note:"The main roasting oven. Yorkshires at 220°C Fan, then the goose-fat roasties at 210°C Fan."},
+ c2:{t:"Smeg Cavity 2",s:"Bottom left · 61L multifunction",note:"Set to Conventional/Circulaire at 200°C. Raw carrots and parsnips go in at 12:36, the cauliflower cheese at 12:48."},
+ c3:{t:"Smeg Cavity 3",s:"Top left · 36L with grill",note:"Low warm for the 15 plates, then High Grill for the 90-second Yorkshire flash."},
+ apo:{t:"Anova Precision Oven",s:"Steam oven",note:"80°C / 100% steam for the overnight brisket braise, 85°C / 100% steam for the morning potatoes, then 65°C / 30% steam (Sous Vide mode) to hold the brisket and mash."},
+ tm:{t:"Thermomix TM7",s:"Cookidoo recipes",note:"Yorkshire batter and cheese sauce in the morning, then whips the mash at 12:20 (Speed 3–4, butterfly whisk)."},
+ hob:{t:"Induction hob",s:"",note:"Brisket sear the night before. Cauliflower parboil and the gravy base in the morning; mash potatoes and finishing the gravy in the countdown."},
+ ctr:{t:"Counter",s:"Prep and resting",note:"Prep, resting and plating. The bottom-right Smeg drawer is storage only, with no heat."}
+};
+const SMEG={c3:[0,0,"Cavity 3","36L grill"],c1:[1,0,"Cavity 1","61L fan"],c2:[0,1,"Cavity 2","61L multi"],dr:[1,1,"Drawer","Storage only"]};
+function layoutSVG(k){
+  return `<svg class="layout" viewBox="0 0 340 250" role="img" aria-label="Smeg layout with ${INFO[k].t} highlighted">
+   <rect x="2" y="2" width="336" height="246" rx="14" fill="var(--sunk)" stroke="var(--line)" stroke-width="2"/>
+   ${Object.entries(SMEG).map(([id,[cx,cy,n,d]])=>{const on=id===k,x=14+cx*160,y=14+cy*114,h=cy?108:108;
+     return `<rect x="${x}" y="${y}" width="152" height="${h}" rx="10" fill="${on?`color-mix(in srgb, var(--${k}) 28%, var(--surface))`:"var(--surface)"}" stroke="${on?`var(--${k})`:"var(--line)"}" stroke-width="${on?4:1.5}"/>
+     <rect x="${x+16}" y="${y+12}" width="120" height="6" rx="3" fill="${on?`var(--${k})`:"var(--line)"}"/>
+     <text x="${x+76}" y="${y+58}" text-anchor="middle" font-family="Bricolage Grotesque, system-ui, sans-serif" font-weight="800" font-size="19" fill="var(--ink)">${n}</text>
+     <text x="${x+76}" y="${y+80}" text-anchor="middle" font-family="Figtree, system-ui, sans-serif" font-size="13" fill="var(--muted)">${d}</text>`}).join("")}
+  </svg>`;
+}
+let lastFocus=null;
+function openEq(k){
+  lastFocus=document.activeElement;
+  const m=nowMin(),info=INFO[k];
+  let sched="";
+  if(APP[k]){const rows=APP[k].filter(([f])=>f>-9999&&f!==0);let cur=-1;rows.forEach(([f],i)=>{if(f<=m)cur=i});
+    sched=`<h5>Today's settings</h5><div class="sched">${rows.map(([f,l],i)=>`<div><b>${fmt(f)}</b><span class="${i===cur?"cur":""}">${l}${i===cur?" · now":""}</span></div>`).join("")}</div>`;}
+  const used=STEPS.map((s,i)=>({s,i})).filter(({s})=>s.tasks&&s.tasks.some(x=>x[0]===k));
+  const bg=document.createElement("div");bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="${info.t}" style="--eq:var(--${k})">
+    <div class="sheet-h"><div><h4>${info.t}</h4>${info.s?`<div class="sub">${info.s}</div>`:""}</div><button class="x" data-close aria-label="Close">✕</button></div>
+    ${SMEG[k]?layoutSVG(k):""}
+    <p class="note">${t(info.note)}</p>${sched}
+    <h5>Steps that use it</h5><div class="jl">${used.map(({s,i})=>`<button data-jump="${i}"><b>${fmt(s.at)}</b><span>${s.title}</span><span aria-hidden="true">›</span></button>`).join("")}</div>
+  </div>`;
+  document.body.appendChild(bg);
+  bg.querySelector("[data-close]").focus();
+}
+function closeSheet(){const bg=document.querySelector(".sheet-bg");if(bg){bg.remove();if(lastFocus&&lastFocus.focus)lastFocus.focus()}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-close]")||e.target.classList.contains("sheet-bg")){closeSheet();return}
+  const jp=e.target.closest("[data-jump]");
+  if(jp){const i=+jp.dataset.jump;closeSheet();S.open[i]=true;save();applyOpen();paintFold();document.getElementById("s"+i).scrollIntoView({behavior:"smooth",block:"start"});return}
+  const eqb=e.target.closest("[data-eq]");
+  if(eqb){e.preventDefault();openEq(eqb.dataset.eq);return}
+  const tk=e.target.closest("[data-tick]");
+  if(tk){const id=tk.dataset.tick,si=+id.split("-")[0];S.done[id]=!S.done[id];
+    if(isComplete(si)){S.open[si]=true;setTimeout(()=>{delete S.open[si];save();tick();paintFold()},700)}
+    save();paintTicks();tick();return}
+  const tg=e.target.closest("[data-toggle]");
+  if(tg){const i=+tg.dataset.toggle;S.open[i]=document.getElementById("s"+i).classList.contains("collapsed");save();applyOpen();return}
+  const tb=e.target.closest("[data-timer]");
+  if(tb){unlock();startTimer(tb.dataset.timer,+tb.dataset.min,tb.dataset.lb);return}
+  const st=e.target.closest("[data-stop]");
+  if(st){S.timers=S.timers.filter(x=>x.id!==st.dataset.stop);save();paintTimers();return}
+  const go=e.target.closest("[data-go]");
+  if(go){document.getElementById(go.dataset.go).scrollIntoView({behavior:"smooth",block:"start"});return}
+});
+document.addEventListener("keydown",e=>{if(e.target.closest&&e.target.closest("[data-eq]"))return;const tg=e.target.closest&&e.target.closest("[data-toggle]");if(tg&&(e.key==="Enter"||e.key===" ")){e.preventDefault();tg.click()}});
+const fb=document.getElementById("foldBtn");
+function paintFold(){fb.textContent=Object.keys(S.open).length?"Back to auto":"Expand all"}
+fb.onclick=()=>{if(Object.keys(S.open).length){S.open={}}else{STEPS.forEach((_,i)=>S.open[i]=true)}save();applyOpen();paintFold()};
+document.addEventListener("click",e=>{if(e.target.closest("[data-toggle]")&&!e.target.closest("[data-eq]"))paintFold()});
+paintFold();
+document.getElementById("jumpNow").onclick=()=>{S.open={};save();applyOpen();paintFold();const m=nowMin();let i=curIndex(m);if(i<0)i=0;document.getElementById("s"+i).scrollIntoView({behavior:"smooth",block:"start"})};
+
+const rb=document.getElementById("rehBtn"),bar=document.getElementById("rehBar"),rr=document.getElementById("rehRange"),ro=document.getElementById("rehOut");
+rb.onclick=()=>{const on=rb.getAttribute("aria-pressed")!=="true";rb.setAttribute("aria-pressed",on);bar.hidden=!on;preview=on?+rr.value:null;ro.textContent=fmt(+rr.value);tick()};
+rr.oninput=()=>{preview=+rr.value;ro.textContent=fmt(preview);tick()};
+
+const rw=document.getElementById("resetWrap");
+function resetIdle(){rw.innerHTML='<button class="pill-btn" id="resetBtn">Reset ticks</button>';document.getElementById("resetBtn").onclick=resetAsk}
+function resetAsk(){rw.innerHTML='<span class="eyebrow">Clear all ticks &amp; timers?</span><button class="pill-btn" id="rY" aria-pressed="true">Clear</button><button class="pill-btn" id="rN">Keep</button>';
+  document.getElementById("rY").onclick=()=>{S.done={};seedPredone();S.timers=[];S.open={};save();paintFold();paintTicks();paintTimers();tick();resetIdle()};
+  document.getElementById("rN").onclick=resetIdle}
+resetIdle();
+
+let lock=null;const wb=document.getElementById("wakeBtn");
+async function wake(){try{lock=await navigator.wakeLock.request("screen");wb.setAttribute("aria-pressed","true");wb.textContent="Screen stays on";lock.addEventListener("release",()=>{if(document.visibilityState==="visible"&&wb.dataset.want)return;wb.setAttribute("aria-pressed","false");wb.textContent="Keep screen on"})}catch(e){wb.textContent="Set Auto-Lock to Never";}}
+wb.onclick=()=>{if(lock&&!lock.released){wb.dataset.want="";lock.release();lock=null;wb.setAttribute("aria-pressed","false");wb.textContent="Keep screen on"}else{wb.dataset.want="1";wake()}};
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&wb.dataset.want&&(!lock||lock.released))wake()});
+
+paintTicks();tick();paintTimers();
+setInterval(paintTimers,500);setInterval(tick,5000);
+</script>
+
+</body>
+</html>
