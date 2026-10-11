@@ -1,0 +1,66 @@
+{
+ "equipment": {
+  "c1": {
+   "name": "Cavity 1",
+   "full": "Smeg Cavity 1",
+   "desc": "Top right · 61L fan oven",
+   "info": "Main fan oven. Best for roasting and Yorkshires.",
+   "smeg": [
+    1,
+    0
+   ]
+  },
+  "c2": {
+   "name": "Cavity 2",
+   "full": "Smeg Cavity 2",
+   "desc": "Bottom left · 61L multifunction",
+   "info": "Multifunction oven: Conventional, Circulaire (fan) and more.",
+   "smeg": [
+    0,
+    1
+   ]
+  },
+  "c3": {
+   "name": "Cavity 3",
+   "full": "Smeg Cavity 3",
+   "desc": "Top left · 36L with grill",
+   "info": "Smaller oven with a grill. Good for warming plates and quick grill finishes.",
+   "smeg": [
+    0,
+    0
+   ]
+  },
+  "apo": {
+   "name": "Anova APO",
+   "full": "Anova Precision Oven",
+   "desc": "Steam oven",
+   "info": "Combi steam oven with Sous Vide mode for precise low-temperature cooking and holding."
+  },
+  "tm": {
+   "name": "Thermomix TM7",
+   "full": "Thermomix TM7",
+   "desc": "Cookidoo recipes",
+   "info": "Batters, sauces, mash and anything stirred or whipped."
+  },
+  "hob": {
+   "name": "Induction hob",
+   "full": "Induction hob",
+   "desc": "",
+   "info": "Boiling, searing, sauces and gravy."
+  },
+  "ctr": {
+   "name": "Counter",
+   "full": "Counter",
+   "desc": "Prep and resting",
+   "info": "Prep, resting and plating."
+  }
+ },
+ "smegDrawer": {
+  "name": "Drawer",
+  "desc": "Storage only, no heat",
+  "smeg": [
+   1,
+   1
+  ]
+ }
+}

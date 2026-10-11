@@ -1,0 +1,740 @@
+{
+ "schema": 1,
+ "slug": "sunday-roast",
+ "title": "Sunday Roast",
+ "subtitle": "Braised brisket for 15",
+ "serves": 15,
+ "serve": "13:30",
+ "created": "2026-10-11",
+ "tags": [
+  "roast",
+  "beef",
+  "sunday",
+  "big-batch"
+ ],
+ "summary": "Overnight-braised brisket with goose-fat roasties, Yorkshires, honey-citrus carrots, bay parsnips, cauliflower cheese, mash and proper gravy.",
+ "phases": [
+  {
+   "id": "p0",
+   "name": "Night before"
+  },
+  {
+   "id": "p1",
+   "name": "Morning power hour"
+  },
+  {
+   "id": "p2",
+   "name": "Walk & downtime"
+  },
+  {
+   "id": "p3",
+   "name": "Service countdown"
+  }
+ ],
+ "ingredients": [
+  {
+   "name": "Rolled beef brisket",
+   "qty": "3 joints, 4.5–5 kg total"
+  },
+  {
+   "name": "Beef stock",
+   "qty": "about 1 litre"
+  },
+  {
+   "name": "Onions",
+   "qty": "2"
+  },
+  {
+   "name": "Garlic",
+   "qty": "4 cloves"
+  },
+  {
+   "name": "Worcestershire sauce",
+   "qty": "a few dashes"
+  },
+  {
+   "name": "Red wine",
+   "qty": "1 glass"
+  },
+  {
+   "name": "Roasting potatoes",
+   "qty": "for 15"
+  },
+  {
+   "name": "Mash potatoes",
+   "qty": "for 15"
+  },
+  {
+   "name": "Goose fat",
+   "qty": "200g"
+  },
+  {
+   "name": "Carrots",
+   "qty": "for 15"
+  },
+  {
+   "name": "Parsnips",
+   "qty": "for 15"
+  },
+  {
+   "name": "Cauliflower",
+   "qty": "for 15"
+  },
+  {
+   "name": "Cheese",
+   "qty": "for sauce and topping"
+  },
+  {
+   "name": "Milk",
+   "qty": "for batter, cheese sauce and mash"
+  },
+  {
+   "name": "Eggs",
+   "qty": "for Yorkshire batter"
+  },
+  {
+   "name": "Plain flour",
+   "qty": "batter, sauce and gravy"
+  },
+  {
+   "name": "Butter",
+   "qty": "mash and gravy"
+  },
+  {
+   "name": "Honey",
+   "qty": "to drizzle"
+  },
+  {
+   "name": "Orange",
+   "qty": "1"
+  },
+  {
+   "name": "Red wine vinegar",
+   "qty": "splash"
+  },
+  {
+   "name": "Thyme",
+   "qty": "bunch"
+  },
+  {
+   "name": "Bay leaves",
+   "qty": "a few"
+  },
+  {
+   "name": "Redcurrant jelly",
+   "qty": "1–2 tsp"
+  },
+  {
+   "name": "Soy sauce",
+   "qty": "dash"
+  },
+  {
+   "name": "Nutmeg",
+   "qty": "pinch"
+  },
+  {
+   "name": "Sunflower oil",
+   "qty": "Yorkshire top-up"
+  }
+ ],
+ "steps": [
+  {
+   "phase": "p0",
+   "at": "-1 22:30",
+   "title": "Overnight beef braise",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Keep the butcher netting on all 3 brisket joints (about 10–11 lb / 4.5–5 kg total) so they hold their shape for neat slicing."
+    },
+    {
+     "eq": "hob",
+     "text": "Season with coarse salt and black pepper, then sear hard in a hot skillet for colour."
+    },
+    {
+     "eq": "ctr",
+     "text": "Place the briskets side by side in a deep roasting tray."
+    },
+    {
+     "eq": "ctr",
+     "text": "Add 500ml beef stock, 1 sliced onion, 4 smashed garlic cloves and a dash of Worcestershire sauce around the base."
+    },
+    {
+     "eq": "ctr",
+     "text": "Cover tightly with a double layer of foil to trap the braising moisture."
+    },
+    {
+     "eq": "apo",
+     "text": "Set APO to 80°C / 100% Steam (176°F), convection mode."
+    },
+    {
+     "eq": "apo",
+     "text": "Slide the tray in at about 10:30 PM and run for 10 hours. A probe should slide in easily, but a slice should still hold together."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "08:45",
+   "title": "Potatoes into the steam",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Cut roasting potatoes into irregular 45–50mm chunks."
+    },
+    {
+     "eq": "apo",
+     "text": "Load onto Rack 1 (lowest shelf, elevated off the base), beside the brisket tray."
+    },
+    {
+     "eq": "apo",
+     "text": "Raise APO to 85°C / 100% Steam. Steam the potatoes for 60 minutes total.",
+     "timer": 60,
+     "timerLabel": "APO potatoes"
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "08:50",
+   "title": "Brisket harvest & separation",
+   "tasks": [
+    {
+     "eq": "apo",
+     "text": "Remove the overnight brisket from the APO."
+    },
+    {
+     "eq": "ctr",
+     "text": "Pour most of the juices into a jug, but <b>leave about 2cm in the tray</b> around the meat. Re-cover the tray tightly with foil; the brisket holds in its own liquid so it stays moist."
+    },
+    {
+     "eq": "ctr",
+     "text": "Skim the jug and separate the golden tallow (for roasting) from the beef jus (for gravy)."
+    },
+    {
+     "eq": "ctr",
+     "text": "Cover jus and tallow and put both in the fridge. Any fat left on the jus sets on top and lifts off easily."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "08:55",
+   "title": "Yorkshire pudding batter",
+   "tasks": [
+    {
+     "eq": "tm",
+     "text": "Run the saved Cookidoo “Yorkshire Pudding” recipe."
+    },
+    {
+     "eq": "ctr",
+     "text": "Pour batter into a jug, cover, and rest in the fridge."
+    },
+    {
+     "eq": "tm",
+     "text": "Rinse the TM7 bowl."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:05",
+   "title": "Prep the roots (raw)",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Scrub or peel carrots and parsnips. Cut into even batons about 2cm thick; halve thick parsnip tops so every piece matches."
+    },
+    {
+     "eq": "ctr",
+     "text": "Keep them raw. No steaming: roots soften too slowly below boiling and can set firm. Cover and refrigerate."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:10",
+   "title": "Cauliflower parboil",
+   "tasks": [
+    {
+     "eq": "hob",
+     "text": "Drop florets into boiling salted water for 3–4 minutes.",
+     "timer": 4,
+     "timerLabel": "Cauli parboil"
+    },
+    {
+     "eq": "ctr",
+     "text": "Drain thoroughly and spread in a single layer over clean tea towels to steam bone-dry."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:20",
+   "title": "Cheese sauce & assemble",
+   "tasks": [
+    {
+     "eq": "tm",
+     "text": "Run the saved Cookidoo “Cheese Sauce” recipe."
+    },
+    {
+     "eq": "ctr",
+     "text": "Fold sauce over the dry florets in a large baking dish; scatter extra cheese on top."
+    },
+    {
+     "eq": "ctr",
+     "text": "Leave uncovered 15–20 min to cool, then cover and refrigerate."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:35",
+   "title": "Prep mash potatoes",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Peel and cut mash potatoes into 2cm cubes."
+    },
+    {
+     "eq": "hob",
+     "text": "Submerge in a large pot of cold salted water on the hob, ready for later."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:45",
+   "title": "APO switch to holding safe",
+   "tasks": [
+    {
+     "eq": "apo",
+     "text": "Pull potatoes: tip into a colander, rough up vigorously, spread on wire racks to air-dry."
+    },
+    {
+     "eq": "apo",
+     "text": "Wipe any pooled water from the APO floor."
+    },
+    {
+     "eq": "apo",
+     "text": "Switch APO to 65°C / 30% Steam (Sous Vide mode)."
+    },
+    {
+     "eq": "apo",
+     "text": "Place the covered brisket tray, juices and all, inside to hold until service."
+    }
+   ]
+  },
+  {
+   "phase": "p1",
+   "at": "09:50",
+   "title": "Gravy base",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Lift any set fat off the chilled jus."
+    },
+    {
+     "eq": "hob",
+     "text": "Brown 1 sliced onion and 1 chopped carrot hard in a little tallow until dark and sticky (about 10 min).",
+     "timer": 10,
+     "timerLabel": "Brown onion"
+    },
+    {
+     "eq": "hob",
+     "text": "Add a good glass of red wine and reduce by half before anything else goes in.",
+     "timer": 4,
+     "timerLabel": "Reduce wine"
+    },
+    {
+     "eq": "hob",
+     "text": "Stir in 40g flour for 2 min, then gradually whisk in the brisket jus and beef stock to make about 1 litre.",
+     "timer": 2,
+     "timerLabel": "Roux"
+    },
+    {
+     "eq": "hob",
+     "text": "Add a splash of Worcestershire and the thyme. Simmer 15 min, then strain, pressing the veg.",
+     "timer": 15,
+     "timerLabel": "Gravy simmer"
+    },
+    {
+     "eq": "ctr",
+     "text": "Cool uncovered, then cover and refrigerate. Finish it at 1:10."
+    }
+   ]
+  },
+  {
+   "phase": "p2",
+   "at": "10:15",
+   "title": "Into the fridge, then go",
+   "kind": "downtime",
+   "note": "Brisket holds safely at 65°C in the APO. Everything else waits in the fridge: roasties drying on their racks, raw roots, cauliflower cheese, batter, gravy base and tallow. Go for a walk. Back at 11:55.",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Once the steam has stopped rising, slide the potato racks into the fridge <b>uncovered</b>. The cold air keeps drying them for crisper roasties."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "11:55",
+   "title": "Fridge out · first oven on",
+   "tasks": [
+    {
+     "eq": "c1",
+     "text": "Put the fat in the Yorkshire tins and preheat to 220°C Fan. Use a layer about 4mm deep in each hole: roughly 1 tbsp (15ml) per hole in a 4-hole tin, or 2 tsp per hole in a 12-hole tin. Beef tallow first, topped up with spare goose fat or sunflower oil."
+    },
+    {
+     "eq": "ctr",
+     "text": "Take potatoes, roots, cauliflower cheese and gravy base out of the fridge. Give the batter a quick stir."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:00",
+   "title": "Boil and warm plates",
+   "tasks": [
+    {
+     "eq": "hob",
+     "text": "Bring the pot of diced mash potatoes to a rolling boil (15–18 min).",
+     "timer": 17,
+     "timerLabel": "Mash boil"
+    },
+    {
+     "eq": "c3",
+     "text": "Stack 15 dinner plates inside on low warm."
+    },
+    {
+     "eq": "ctr",
+     "text": "Toss carrots and parsnips with olive oil, salt and pepper. Spread in a <b>single layer</b> across two trays, with gaps between pieces so they roast instead of steam."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:15",
+   "title": "Yorkshires in",
+   "tasks": [
+    {
+     "eq": "c1",
+     "text": "Check the fat is smoking. If not, give it 5 more minutes."
+    },
+    {
+     "eq": "c1",
+     "text": "Work fast with the door shut between tins: fill each hole only <b>a third to half full</b>. The batter should sizzle hard and the fat should well up around its edges."
+    },
+    {
+     "eq": "c1",
+     "text": "Bake 20–22 min at 220°C Fan. Don't open the door.",
+     "timer": 21,
+     "timerLabel": "Yorkshires"
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:20",
+   "title": "Whip the mash · second oven on",
+   "tasks": [
+    {
+     "eq": "c2",
+     "text": "Preheat to 200°C Conventional/Circulaire."
+    },
+    {
+     "eq": "tm",
+     "text": "Drain boiled potatoes thoroughly. Add to TM7 with butter, warm milk, salt and nutmeg; whip until silky (Speed 3–4, butterfly whisk)."
+    },
+    {
+     "eq": "apo",
+     "text": "Transfer mash to a covered dish and slide into the APO beside the brisket."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:36",
+   "title": "Yorkshires out · goose fat in",
+   "tasks": [
+    {
+     "eq": "c1",
+     "text": "Pull Yorkshires to rest on the counter. Drop oven to 210°C Fan."
+    },
+    {
+     "eq": "c1",
+     "text": "Slide in 2 large roasting pans with 200g goose fat (100g each) to get smoking hot."
+    },
+    {
+     "eq": "c2",
+     "text": "Slide in the carrot and parsnip trays (raw). Roast 40 min, then glaze.",
+     "timer": 40,
+     "timerLabel": "Roots"
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:42",
+   "title": "Roasties in",
+   "tasks": [
+    {
+     "eq": "c1",
+     "text": "Carefully tumble the dry potatoes into the smoking goose fat. Roast 44 min.",
+     "timer": 44,
+     "timerLabel": "Roasties"
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "12:48",
+   "title": "Cauliflower cheese in",
+   "tasks": [
+    {
+     "eq": "c2",
+     "text": "Slide in the cauliflower cheese beside the roots. Bake 35–40 min at 200°C. It came from the fridge, so check the centre is piping hot (75°C) before serving.",
+     "timer": 38,
+     "timerLabel": "Cauli cheese"
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "13:10",
+   "title": "Finish the gravy",
+   "tasks": [
+    {
+     "eq": "hob",
+     "text": "Bring the gravy base to a gentle simmer. If it's thin, let it reduce for a few minutes."
+    },
+    {
+     "eq": "c1",
+     "text": "Turn the roast potatoes in the goose fat."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "13:16",
+   "title": "Glaze the roots · season gravy",
+   "tasks": [
+    {
+     "eq": "c2",
+     "text": "Pull root trays out briefly. Test a thick piece with a knife; it should already be nearly tender.<ul><li><b>Carrots:</b> honey, orange juice, orange zest, bruised thyme.</li><li><b>Parsnips:</b> red wine vinegar, bruised bay leaves.</li></ul>"
+    },
+    {
+     "eq": "c2",
+     "text": "Return both trays for the final 10 min glaze.",
+     "timer": 10,
+     "timerLabel": "Root glaze"
+    },
+    {
+     "eq": "hob",
+     "text": "Season the gravy: 1–2 tsp redcurrant jelly, a dash of soy sauce or Worcestershire, then salt until it tastes rich rather than flat. Keep on lowest heat."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "13:26",
+   "title": "Pull everything",
+   "tasks": [
+    {
+     "eq": "c1",
+     "text": "Pull roast potatoes. From Cavity 2: glazed roots and bubbling cauliflower cheese."
+    },
+    {
+     "eq": "c3",
+     "text": "Switch to High Grill; slide in rested Yorkshires for 90 seconds to flash crisp.",
+     "timer": 1.5,
+     "timerLabel": "Yorkshire flash"
+    },
+    {
+     "eq": "apo",
+     "text": "Pull the brisket tray and the hot mash. Lift the brisket onto the board, snip off the netting, and keep the tray juices.",
+     "timer": 4,
+     "timerLabel": "Brisket rest"
+    },
+    {
+     "eq": "c3",
+     "text": "Retrieve the warm plates."
+    },
+    {
+     "eq": "hob",
+     "text": "Off the heat, whisk a knob of cold butter into the gravy for gloss, then pour into warm sauceboats."
+    }
+   ]
+  },
+  {
+   "phase": "p3",
+   "at": "13:30",
+   "title": "Service",
+   "kind": "service",
+   "tasks": [
+    {
+     "eq": "ctr",
+     "text": "Carve the brisket across the grain, about 1cm thick. Lay the slices in a warm dish and spoon the hot tray juices over them so they stay moist at the table."
+    },
+    {
+     "eq": "ctr",
+     "text": "Serve roasties, honey-citrus carrots, tangy bay parsnips, cauliflower cheese and mash family-style."
+    },
+    {
+     "eq": "ctr",
+     "text": "Top with piping-hot Yorkshires and hot gravy."
+    }
+   ]
+  }
+ ],
+ "equipment": {
+  "c1": [
+   [
+    "11:55",
+    "220°C Fan · preheat"
+   ],
+   [
+    "12:15",
+    "220°C Fan · Yorkshires"
+   ],
+   [
+    "12:36",
+    "210°C Fan · goose fat"
+   ],
+   [
+    "12:42",
+    "210°C Fan · roasties"
+   ],
+   [
+    "13:26",
+    "Off · emptied"
+   ]
+  ],
+  "c2": [
+   [
+    "12:20",
+    "200°C · preheat"
+   ],
+   [
+    "12:36",
+    "200°C · roots"
+   ],
+   [
+    "12:48",
+    "200°C · roots & cauli"
+   ],
+   [
+    "13:16",
+    "200°C · glazing"
+   ],
+   [
+    "13:26",
+    "Off · emptied"
+   ]
+  ],
+  "c3": [
+   [
+    "12:00",
+    "Low warm · plates"
+   ],
+   [
+    "13:26",
+    "High grill · flash"
+   ],
+   [
+    "13:30",
+    "Off"
+   ]
+  ],
+  "apo": [
+   [
+    "-1 22:30",
+    "80°C · steam · brisket braise"
+   ],
+   [
+    "08:45",
+    "85°C · 100% steam · potatoes"
+   ],
+   [
+    "09:45",
+    "65°C · 30% hold"
+   ],
+   [
+    "13:26",
+    "Empty"
+   ]
+  ],
+  "tm": [
+   [
+    "08:55",
+    "Yorkshire batter"
+   ],
+   [
+    "09:05",
+    "Idle"
+   ],
+   [
+    "09:20",
+    "Cheese sauce"
+   ],
+   [
+    "09:30",
+    "Idle"
+   ],
+   [
+    "12:20",
+    "Whipping mash"
+   ],
+   [
+    "12:30",
+    "Idle"
+   ]
+  ],
+  "hob": [
+   [
+    "09:10",
+    "Cauli parboil"
+   ],
+   [
+    "09:15",
+    "Off"
+   ],
+   [
+    "09:50",
+    "Gravy base"
+   ],
+   [
+    "10:15",
+    "Off"
+   ],
+   [
+    "12:00",
+    "Mash boiling"
+   ],
+   [
+    "12:20",
+    "Off"
+   ],
+   [
+    "13:10",
+    "Gravy · simmer"
+   ],
+   [
+    "13:16",
+    "Gravy · lowest"
+   ],
+   [
+    "13:30",
+    "Off"
+   ]
+  ]
+ },
+ "lessons": [
+  "11 Oct 2026: carrots and parsnips steamed at 85°C stayed hard even after an hour's roasting. Now roasted from raw.",
+  "11 Oct 2026: brisket at 85°C for 12h was falling apart but dry. Now 80°C for 10h and held in its own juices.",
+  "11 Oct 2026: gravy tasted flat and slightly bitter. Now browned onion and carrot, wine reduced first, finished with redcurrant jelly, soy, salt and butter.",
+  "11 Oct 2026: Yorkshires rose like cake with 5ml fat per hole. Now a 4mm layer of smoking-hot fat.",
+  "11 Oct 2026: goose-fat roasties and cauliflower cheese were perfect. Keep as is."
+ ]
+}

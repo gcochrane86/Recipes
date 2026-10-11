@@ -1,0 +1,25 @@
+{
+ "updated": null,
+ "sections": [
+  {
+   "name": "Fridge",
+   "items": []
+  },
+  {
+   "name": "Freezer",
+   "items": []
+  },
+  {
+   "name": "Fruit & veg",
+   "items": []
+  },
+  {
+   "name": "Cupboard",
+   "items": []
+  },
+  {
+   "name": "Herbs, spices & sauces",
+   "items": []
+  }
+ ]
+}
