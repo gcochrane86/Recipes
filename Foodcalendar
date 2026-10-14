@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshPlate Planner Prototype</title>
+  <style>
+    :root {
+      --primary: #10843f;
+      --primary-light: #e8f5e9;
+      --bg-app: #f4f6f8;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .demo-hint {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    /* Mobile Phone Shell */
+    .phone-frame {
+      width: 390px;
+      height: 800px;
+      background: var(--surface);
+      border-radius: 44px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 0 10px #334155;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Dynamic Island / Notch */
+    .notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 28px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 50;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 50px 18px 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .app-header h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+
+    .week-pill {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Main Scrollable Views */
+    .viewport {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg-app);
+      padding: 14px;
+      position: relative;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Planner View */
+    .day-heading {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin: 10px 0 8px 4px;
+    }
+
+    .meal-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      overflow: hidden;
+      display: flex;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .meal-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .meal-card:active {
+      transform: scale(0.98);
+    }
+
+    .meal-thumb {
+      width: 105px;
+      min-width: 105px;
+      height: 90px;
+      object-fit: cover;
+      background: #eee;
+    }
+
+    .meal-info {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .meal-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .meal-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .meal-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* Inventory & Preferences View */
+    .section-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .section-card h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      background: #f1f5f9;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .chip.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Modal / Click-Through Recipe Detail Sheet */
+    .recipe-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .recipe-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .recipe-sheet {
+      background: var(--surface);
+      width: 100%;
+      height: 88%;
+      border-radius: 24px 24px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .recipe-modal.open .recipe-sheet {
+      transform: translateY(0);
+    }
+
+    .sheet-bar {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .sheet-bar span {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .close-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sheet-body {
+      overflow-y: auto;
+      padding-bottom: 40px;
+    }
+
+    .recipe-hero {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .recipe-details-content {
+      padding: 16px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0 14px;
+    }
+
+    .tag-row span {
+      background: #f1f5f9;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .method-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin: 18px 0 10px;
+      color: var(--text);
+    }
+
+    /* HelloFresh Style Ingredients Grid */
+    .ing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .ing-item {
+      background: var(--bg-app);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .ing-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .ing-qty {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* HelloFresh Step-by-Step AI Image Cards */
+    .method-step {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .method-step img {
+      width: 100%;
+      height: 155px;
+      object-fit: cover;
+      display: block;
+      background: #f0f0f0;
+    }
+
+    .method-step-text {
+      padding: 12px;
+    }
+
+    .step-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      margin-right: 6px;
+    }
+
+    .step-header {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .step-desc {
+      font-size: 0.78rem;
+      color: #374151;
+      line-height: 1.4;
+    }
+
+    /* Bottom Navigation Tab Bar */
+    .bottom-nav {
+      height: 64px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-hint">📱 Click on <strong>Monday Dinner</strong> to open the HelloFresh recipe breakdown</div>
+
+  <!-- Mobile Frame -->
+  <div class="phone-frame">
+    <div class="notch"></div>
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1>FreshPlate</h1>
+      <span class="week-pill">Week 42</span>
+    </header>
+
+    <!-- TAB 1: WEEKLY PLANNER (HOME) -->
+    <div id="tab-calendar" class="viewport">
+      
+      <div class="day-heading">Monday</div>
+
+      <!-- Breakfast -->
+      <div class="meal-card">
+        <img class="meal-thumb" src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=300&q=80" alt="Eggs">
+        <div class="meal-info">
+          <span class="meal-tag">Breakfast</span>
+          <div class="meal-title">Poached Eggs & Sourdough</div>
+          <div class="meal-meta">15 mins • 28g Protein</div>
+        </div>
+      </div>
+
+      <!-- Lunch -->
+      <div class="meal-card">
+        <img class="meal-thumb" src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80" alt="Salad">
+        <div class="meal-info">
+          <span class="meal-tag">Lunch</span>
+          <div class="meal-title">Mediterranean Salad Bowl</div>
+          <div class="meal-meta">10 mins • Whole Foods</div>
+        </div>
+      </div>
+
+      <!-- Dinner (CLICKABLE TRIGGER) -->
+      <div class="meal-card" onclick="openRecipe()">
+        <img class="meal-thumb" src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300&q=80" alt="Miso Tacos">
+        <div class="meal-info">
+          <span class="meal-tag">Dinner (Tap to View)</span>
+          <div class="meal-title">Miso Glazed Aubergine Tacos</div>
+          <div class="meal-meta">40 mins • Veggie • 2 of 5 a day</div>
+        </div>
+      </div>
+
+      <div class="day-heading">Tuesday</div>
+
+      <div class="meal-card">
+        <img class="meal-thumb" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80" alt="Salmon">
+        <div class="meal-info">
+          <span class="meal-tag">Dinner</span>
+          <div class="meal-title">Pan-Seared Salmon & Sweet Potato</div>
+          <div class="meal-meta">30 mins • Omega-3</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: INVENTORY & SETTINGS -->
+    <div id="tab-inventory" class="viewport hidden">
+      
+      <div class="section-card">
+        <h2>Pantry Staples</h2>
+        <div class="chip-container">
+          <div class="chip selected">Miso Paste</div>
+          <div class="chip selected">Soy Sauce</div>
+          <div class="chip selected">Cider Vinegar</div>
+          <div class="chip selected">Sesame Seeds</div>
+          <div class="chip">Honey</div>
+          <div class="chip">Olive Oil</div>
+          <div class="chip">Basmati Rice</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>Kitchen Equipment</h2>
+        <div class="chip-container">
+          <div class="chip selected">Non-Stick Frying Pan</div>
+          <div class="chip selected">2x Baking Trays</div>
+          <div class="chip selected">Mixing Bowl</div>
+          <div class="chip">Air Fryer</div>
+          <div class="chip">Induction Probe</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>Dietary Filters</h2>
+        <div class="chip-container">
+          <div class="chip selected">Dairy-Free</div>
+          <div class="chip selected">No Refined Sugar</div>
+          <div class="chip selected">&lt; 45 Mins</div>
+          <div class="chip">High Protein</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RECIPE POPUP MODAL -->
+    <div id="recipe-modal" class="recipe-modal" onclick="backdropClose(event)">
+      <div class="recipe-sheet">
+        
+        <div class="sheet-bar">
+          <span>Recipe Instructions</span>
+          <button class="close-btn" onclick="closeRecipe()">✕</button>
+        </div>
+
+        <div class="sheet-body">
+          <img class="recipe-hero" src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=800&q=80" alt="Aubergine Tacos">
+
+          <div class="recipe-details-content">
+            <h2 style="font-size: 1.25rem; font-weight: 800; line-height: 1.2;">Miso Glazed Aubergine Tacos</h2>
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 3px;">with Wedges & Fresh Lettuce</p>
+
+            <div class="tag-row">
+              <span>⏱ 40 Mins</span>
+              <span>🌱 Veggie</span>
+              <span>🥗 2 of 5 a day</span>
+            </div>
+
+            <div class="method-title">Ingredients (2 People)</div>
+            <div class="ing-grid">
+              <div class="ing-item"><div class="ing-name">Aubergine</div><div class="ing-qty">2 chunks</div></div>
+              <div class="ing-item"><div class="ing-name">Potatoes</div><div class="ing-qty">1 small pack</div></div>
+              <div class="ing-item"><div class="ing-name">Miso Paste</div><div class="ing-qty">1 sachet</div></div>
+              <div class="ing-item"><div class="ing-name">Soft Shell Tacos</div><div class="ing-qty">6 pieces</div></div>
+              <div class="ing-item"><div class="ing-name">Red Onion & Vinegar</div><div class="ing-qty">1 onion / 1 sachet</div></div>
+              <div class="ing-item"><div class="ing-name">Sesame Mayo</div><div class="ing-qty">2 sachets</div></div>
+            </div>
+
+            <div class="method-title">Step-by-Step Method</div>
+
+            <!-- Step 1 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1584776296944-ab6fb57b0bdd?w=600&q=80" alt="Chop Wedges & Aubergine">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">1</span> Get Prepped</div>
+                <div class="step-desc">Preheat oven to 200°C. Chop potatoes into 2cm wedges. Trim aubergine and chop into 2cm chunks. Spread onto separate baking trays, drizzle with oil, season potatoes with salt and pepper[span_0](start_span)[span_0](end_span).</div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80" alt="Pickle Onions">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">2</span> Roast & Pickle the Onion</div>
+                <div class="step-desc">Roast wedges for 25–30 mins and aubergine for 20–25 mins[span_1](start_span)[span_1](end_span). Halve and thinly slice red onion; mix half in a bowl with cider vinegar, a pinch of sugar, and salt[span_2](start_span)[span_2](end_span). Set aside to quick-pickle[span_3](start_span)[span_3](end_span).</div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Prep Miso Sauce">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">3</span> Finish the Prep</div>
+                <div class="step-desc">Finely shred iceberg lettuce and chop coriander[span_4](start_span)[span_4](end_span). In a small bowl, whisk together miso paste, honey, soy sauce, sugar, and 1 tbsp water per person[span_5](start_span)[span_5](end_span).</div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80" alt="Toasting Sesame Seeds">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">4</span> Toast the Seeds</div>
+                <div class="step-desc">Toast sesame seeds dry in a frying pan on medium-high for 2–3 mins[span_6](start_span)[span_6](end_span). Stir half into the miso sauce and the other half into the mayonnaise[span_7](start_span)[span_7](end_span).</div>
+              </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" alt="Glaze Aubergine">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">5</span> Finish the Aubergine</div>
+                <div class="step-desc">Stir fry remaining onion in a pan with oil until soft (4–5 mins)[span_8](start_span)[span_8](end_span). Add roasted aubergine and miso sauce; cook 3–5 mins until sticky[span_9](start_span)[span_9](end_span). Warm tortillas in the oven for 2–3 mins[span_10](start_span)[span_10](end_span).</div>
+              </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="method-step">
+              <img src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&q=80" alt="Assemble Tacos">
+              <div class="method-step-text">
+                <div class="step-header"><span class="step-badge">6</span> Assemble & Serve</div>
+                <div class="step-desc">Spread sesame mayo onto warm tortillas[span_11](start_span)[span_11](end_span). Layer shredded lettuce, lime juice, sticky glazed aubergine, quick-pickled onion, and coriander[span_12](start_span)[span_12](end_span). Serve with golden wedges on the side[span_13](start_span)[span_13](end_span).</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" id="btn-planner" onclick="selectTab('calendar')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Planner</span>
+      </button>
+      <button class="nav-btn" id="btn-pantry" onclick="selectTab('inventory')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span>Pantry & Tools</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    function selectTab(tab) {
+      const isCal = tab === 'calendar';
+      document.getElementById('tab-calendar').classList.toggle('hidden', !isCal);
+      document.getElementById('tab-inventory').classList.toggle('hidden', isCal);
+
+      document.getElementById('btn-planner').classList.toggle('active', isCal);
+      document.getElementById('btn-pantry').classList.toggle('active', !isCal);
+    }
+
+    function openRecipe() {
+      document.getElementById('recipe-modal').classList.add('open');
+    }
+
+    function closeRecipe() {
+      document.getElementById('recipe-modal').classList.remove('open');
+    }
+
+    function backdropClose(e) {
+      if (e.target.id === 'recipe-modal') {
+        closeRecipe();
+      }
+    }
+  </script>
+</body>
+</html>
